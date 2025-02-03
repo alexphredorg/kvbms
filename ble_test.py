@@ -10,22 +10,6 @@ async def showDevices():
 
 # This code is heavily based on 
 # https://github.com/fancygaphtrn/esphome/tree/master/my_components/kilovault_bms_ble
-#
-#
-# bytearray(b'3E350000000000009A91010013005C00690B00010000580D520D580D420D00000000000000000000000000000000000000000000000003FBRRRRRRRR')
-# status: 256
-# current: 0.0
-# voltage: 13.63
-# total_capacity: 102.81
-# charge_cycles = 19.0
-# state of charge: 0.92
-# temperature = 18.950000000000045
-# cell1voltage = 3.416
-# cell2voltage = 3.41
-# cell3voltage = 3.416
-# cell4voltage = 3.394
-
-
 class KilovaultBatteryBMS:
     MODEL_NBR_UUID = "2A24"
     KILOVAULT_BMS_SERVICE_UUID = "FFE0"
@@ -97,19 +81,6 @@ class KilovaultBatteryBMS:
             cell4voltage)
     
         self.status_event.set()
-
-    def decode_kilovault_16(self, data, i):
-        i0 = int(chr(data[i+0]), 16)
-        i1 = int(chr(data[i+1]), 16)
-        i2 = int(chr(data[i+2]), 16)
-        i3 = int(chr(data[i+3]), 16)
-        #print(f"{i2} {i3} {i0} {i1}")
-        return (i2 << 12) | (i3 << 8) | (i0 << 4) | i1
-
-    def decode_kilovault_32(self, data, i):
-        i0 = self.decode_kilovault_16(data, i+0)
-        i4 = self.decode_kilovault_16(data, i+4)
-        return (i4 << 16) | i0
 
     async def connect_and_readonce(self):
         async with BleakClient(self.address) as client:
